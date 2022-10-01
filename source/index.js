@@ -1,3 +1,26 @@
+var csvList;
+
+// $.ajax({
+//     url: 'mything.php',
+//     success: function(data) {
+//         csvList = data;
+//     }
+// });
+
+csvList = [48, 35, 17.3]
+
+function calcPosFromLatLonRad(lat,lon,radius){
+  
+    var phi = (90-lat)*(Math.PI/180);
+    var theta = (lon+180)*(Math.PI/180);
+
+    var x = -(radius * Math.sin(phi)*Math.cos(theta));
+    var z = (radius * Math.sin(phi)*Math.sin(theta));
+    var y = (radius * Math.cos(phi));
+  
+    return [x,y,z];
+
+}
 
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -13,7 +36,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 const controls = new THREE.OrbitControls(camera, renderer.domElement)
 controls.update();
 
-const geometry = new THREE.SphereGeometry(5, 50, 50)
+const geometry = new THREE.SphereGeometry(17.3, 50, 50)
 const textureImage = '../img/color.jpg';
 const elevationMap = '../img/elevation.jpg';
 const material = new THREE.MeshStandardMaterial({
@@ -28,15 +51,20 @@ const intensity = 1;
 const light = new THREE.AmbientLight(color, intensity);
 scene.add(light);
 
-const map = new THREE.TextureLoader().load( '../img/download.png' );
-const mat = new THREE.SpriteMaterial( { map: map } );
 
-const sprite = new THREE.Sprite( mat );
+const geometryCylinder = new THREE.CylinderGeometry( 0.05, 0.05, 7, 64 );
+const materialCylinder = new THREE.MeshBasicMaterial( {color: 0x61357f} );
+const cylinder = new THREE.Mesh( geometryCylinder, materialCylinder );
 
-sphere.add( sprite );
+var positions = calcPosFromLatLonRad(csvList[0], csvList[1], csvList[2]);
 
-camera.position.z = 15;
+cylinder.position.x = positions[0];
+cylinder.position.y = positions[1];
+cylinder.position.z = positions[2];
 
+camera.position.z = 50;
+
+sphere.add(cylinder)
 
 function animate() {
 
