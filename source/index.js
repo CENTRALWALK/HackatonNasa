@@ -1,3 +1,4 @@
+
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 
@@ -18,7 +19,6 @@ const elevationMap = '../img/elevation.jpg';
 const material = new THREE.MeshStandardMaterial({
     map: new THREE.TextureLoader().load(textureImage),
     displacementMap: new THREE.TextureLoader().load(elevationMap)
-    // color: 0xffffff
 });
 const sphere = new THREE.Mesh(geometry, material);
 scene.add(sphere);
@@ -28,7 +28,14 @@ const intensity = 1;
 const light = new THREE.AmbientLight(color, intensity);
 scene.add(light);
 
-camera.position.z = 10;
+const map = new THREE.TextureLoader().load( '../img/download.png' );
+const mat = new THREE.SpriteMaterial( { map: map } );
+
+const sprite = new THREE.Sprite( mat );
+
+sphere.add( sprite );
+
+camera.position.z = 15;
 
 
 function animate() {
